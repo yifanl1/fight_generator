@@ -1,5 +1,6 @@
 from move import Move
 from stat import Stat
+import random
 
 class Character(object):
     """
@@ -12,6 +13,10 @@ class Character(object):
     def __init__(self, name="New Character", nicknames=[], base_stats=[], special_moves=[]):
         super(Character, self).__init__()
         self.name = name
-        self.nicknames = nicknames
+        self.aliases = nicknames.append(self.name)
         self.base_stats = base_stats
         self.special_moves = special_moves
+
+
+    def name(self):
+        return random.choice(self.aliases)
