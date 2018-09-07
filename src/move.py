@@ -34,6 +34,42 @@ class Move(object):
         return self.description.replace("$a", performer).replace("$b", victim)
 
 
+    @classmethod
+    def parse(line):
+        """Read a line and converts it into a move object
+
+        A line should be structured as such:
+        (_name) (_description) _power _accuracy <(_stat, _stat_modifier), ...> <(_prerequisite), ...>
+
+        description includes the keywords "$a", "$b"
+        """
+        name, rest = util.read_in_bracket(line.strip())
+        description, rest = util.read_in_bracket(rest.strip())
+        power, accuracy, rest = rest.split(" ", 2)
+        stat_breakdown_list = util.read_in_bracket(rest.strip(), start_bracket="<")
+        prerequisite_list = util.read_in_bracket(rest.strip(), start_bracket="<")
+        return Move()
+
+
+    @classmethod
+    def validate_prerequisite(prerequisite):
+        """
+        checks if prerequisite is of a valid format
+
+        a prerequisite must be one of:
+         [my OR their] _stat >= X
+         [my OR their] _stat1 >= [my OR their] _stat2
+         [my OR their] _stat = X
+         [my OR their] _stat1 = [my OR their] _stat2
+         [my OR their] _stat <= X
+         [my OR their] _stat1 <= [my OR their] _stat2
+         [my OR their] recent move = <_move_name, ...>
+         [my OR their] last move = <_move_name, ...>
+         X uses total
+        """
+        return True
+
+
 class CounterAttack(Move):
     """
     Represents a single counterattack a character can perform after a certain move fails

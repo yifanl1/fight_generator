@@ -17,8 +17,8 @@ class Character(object):
         name="New Character",
         nicknames=[],
         base_stats=[],
-        special_moves=[]):
-
+        special_moves=[]
+    ):
         super(Character, self).__init__()
         self.name = name
         self.aliases = nicknames.append(self.name)
