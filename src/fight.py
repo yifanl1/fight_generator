@@ -1,13 +1,13 @@
 from character import Character
 
-class Fight(object):
+class FightRules(object):
     """
-    Models the simulation of a fight
+    Models the simulation of the rules of fight
     Every fight will have a common pool of moves that all characters can use, in addition to character specific moves
     Every fight will have some set of conditions to determine victory, such as running out of stamina, tapping out, etc
     """
     def __init__(self, name="New Fight", standard_moves=[], common_stats=[], win_conditions=[]):
-        super(Fight, self).__init__()
+        super(FightRules, self).__init__()
         self.name = name
         self.standard_moves = standard_moves
         self.common_stats = common_stats
@@ -25,5 +25,14 @@ class Fight(object):
         5. determine if the fight is won
 
     """
-    def one_round(self, character_1, character_2):
-        pass
+
+
+class Fight(object):
+    """
+    Models a single instance of a fight
+    """
+
+    def __init__(self, fighters=[], rules=None):
+        super(Fight, self).__init__()
+        self.fighters = fighters
+        self.rules = rules

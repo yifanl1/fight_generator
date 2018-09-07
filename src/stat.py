@@ -8,6 +8,7 @@ class Stat(object):
         self.name = name
         self.default_value = None
         self.current_value = default_value
+        self.recovery_per_turn = 0
 
 
 class PersistantStat(Stat):
@@ -28,6 +29,7 @@ class ResourceStat(Stat):
     def __init__(self, name="New Resource Stat", default_value=10, recovery_per_turn=0):
         super(ResourceStat, self).__init__(name, default_value)
         self.recovery_per_turn = recovery_per_turn
+
 
 class UnmodifiableStat(Stat):
     """
