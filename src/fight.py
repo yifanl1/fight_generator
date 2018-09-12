@@ -10,7 +10,7 @@ class FightRules(object):
         super(FightRules, self).__init__()
         self.name = name
         self.standard_moves = standard_moves
-        self.common_stats = common_stats
+        self.relevant_stats = relevant_stats
         self.win_conditions = win_conditions
 
     """

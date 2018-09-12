@@ -14,21 +14,19 @@ class Character(object):
     def __init__(
         self,
         *,
-        name="New Character",
-        nicknames=[],
+        nicknames=["New Character"],
         base_stats=[],
         special_moves=[]
     ):
         super(Character, self).__init__()
-        self.name = name
-        self.aliases = nicknames.append(self.name)
+        self.nicknames = nicknames
         self.stats = base_stats
         self.base_stats = base_stats
         self.special_moves = special_moves
 
 
     def name(self):
-        return util.choice(self.aliases)
+        return util.choice(self.nicknames)
 
 
     def perform_move_on_self(*, move=None):

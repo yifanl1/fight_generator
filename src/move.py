@@ -11,17 +11,19 @@ class Move(object):
         *,
         name="New Move",
         power=0,
-        affected_stats={},
-        chance_to_succeed=1,
-        description="$a attacks $b",
+        affects={},
+        success_rate=1,
+        descriptions=["$a attacks $b"],
+        fail_descriptions=["$a attacks $b but misses"],
         prerequisites=[]
     ):
         super(Move, self).__init__()
         self.name = name
         self.power = power
         self.affected_stats = affected_stats
-        self.chance_to_succeed = chance_to_succeed
-        self.description = description
+        self.success_rate = success_rate
+        self.descriptions = descriptions
+        self.fail_descriptions = fail_descriptions
         self.prerequisites = prerequisites
 
     def stat_breakdown(self):
@@ -31,43 +33,31 @@ class Move(object):
 
 
     def format(self, *, performer="", victim=""):
-        return self.description.replace("$a", performer).replace("$b", victim)
+        descriptions = self.descriptions if self.does_succeed() else self.fail_descriptions
+        return util.choice(descriptions).replace("$a", performer).replace("$b", victim)
 
 
-    @classmethod
-    def parse(line):
-        """Read a line and converts it into a move object
-
-        A line should be structured as such:
-        (_name) (_description) _power _accuracy <(_stat, _stat_modifier), ...> <(_prerequisite), ...>
-
-        description includes the keywords "$a", "$b"
-        """
-        name, rest = util.read_in_bracket(line.strip())
-        description, rest = util.read_in_bracket(rest.strip())
-        power, accuracy, rest = rest.split(" ", 2)
-        stat_breakdown_list = util.read_in_bracket(rest.strip(), start_bracket="<")
-        prerequisite_list = util.read_in_bracket(rest.strip(), start_bracket="<")
-        return Move()
-
-
-    @classmethod
-    def validate_prerequisite(prerequisite):
-        """
-        checks if prerequisite is of a valid format
-
-        a prerequisite must be one of:
-         [my OR their] _stat >= X
-         [my OR their] _stat1 >= [my OR their] _stat2
-         [my OR their] _stat = X
-         [my OR their] _stat1 = [my OR their] _stat2
-         [my OR their] _stat <= X
-         [my OR their] _stat1 <= [my OR their] _stat2
-         [my OR their] recent move = <_move_name, ...>
-         [my OR their] last move = <_move_name, ...>
-         X uses total
-        """
+    def does_succeed(self):
         return True
+
+
+    # @classmethod
+    # def validate_prerequisite(prerequisite):
+    #     """
+    #     checks if prerequisite is of a valid format
+
+    #     a prerequisite must be one of:
+    #      [my OR their] _stat >= X
+    #      [my OR their] _stat1 >= [my OR their] _stat2
+    #      [my OR their] _stat = X
+    #      [my OR their] _stat1 = [my OR their] _stat2
+    #      [my OR their] _stat <= X
+    #      [my OR their] _stat1 <= [my OR their] _stat2
+    #      [my OR their] recent move = <_move_name, ...>
+    #      [my OR their] last move = <_move_name, ...>
+    #      X uses total
+    #     """
+    #     return True
 
 
 class CounterAttack(Move):
@@ -80,10 +70,48 @@ class CounterAttack(Move):
         *,
         name="New Move",
         power=0,
-        affected_stats={},
-        chance_to_succeed=1,
-        description="(1) attacks (2)",
+        affects={},
+        success_rate=1,
+        descriptions=["$a attacks $b"],
+        fail_descriptions=["$a attacks $b but misses"],
         counter_to=[]
     ):
-        prerequisites = ["LAST MOVE WAS {}".format(move.name) for move in counter_to]
-        super(CounterAttack, self).__init__(name, affected_stats, chance_to_succeed, description, prerequisites)
+        prerequisites = ["last move was {}".format(move.name) for move in counter_to]
+        super(CounterAttack, self).__init__(
+            name=name,
+            power=power,
+            affects=affects,
+            success_rate=success_rate,
+            descriptions=descriptions,
+            fail_descriptions=fail_descriptions,
+            prerequisites=prerequisites)
+
+
+class SelfMove(Move):
+    """
+    Represents a move that only affects the performing character
+    """
+    def __init__(
+        self,
+        *,
+        name="New Move",
+        power=0,
+        affected_stats={},
+        success_rate=1,
+        descriptions=["$a blocks"],
+        fail_descriptions=["$a raises a gaurd but is too weak!"],
+        prerequisites=[]
+    ):
+        super(SelfMove, self).__init__(
+            name=name,
+            power=power,
+            affects=affects,
+            success_rate=success_rate,
+            descriptions=descriptions,
+            fail_descriptions=fail_descriptions,
+            prerequisites=prerequisites)
+
+
+    def format(self, *, performer=""):
+        description = util.choice(self.descriptions)
+        return description.replace("$a", performer)

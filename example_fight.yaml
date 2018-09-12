@@ -1,0 +1,69 @@
+---
+# A simple example fight
+name: fight
+initiative: # determines how a
+  -
+    stat: speed
+    modifier: 1.0
+  -
+    stat: stamina
+    modifier: 0.1
+moves:
+  -
+    name: attack
+    power: 10
+    affects:
+      -
+        stat: speed
+        modifier: 0.1
+        character: my #character must be my or their, if none, defaults as their
+      -
+        stat: stamina
+        # if no modifier provided, defaults as -1.0
+    descriptions:
+      - $a attacks $b!
+    fail_descriptions:
+      - $a attacks $b but misses!
+    success_rate: 1.0 # if no success rate provided, defaults as 1.0
+    prerequisites:
+      - my strength >= 100
+      - their strength <= 100
+      - my strength = their strength
+      - my recent move = move2
+      - their last move = move3
+      - 5 uses total
+  -
+    name: block
+    power: 100
+    type: self # if specified, can be normal, self, combo or counter
+               # if not specified, treated as normal
+               # a self move only affects the performer
+               # a combo move is performed directly after a specific move
+               # a counter move is only performed after the opponent's move fails
+    affects:
+      -
+        stat: defense
+        modifier: 1.0
+        character: my #character must be my or their, if none, defaults as their
+    descriptions:
+      - $a blocks!
+    # moves can have no fail_descriptions, in this case, their success rate should be 1.0
+    success_rate: 1.0 # if no success rate provided, defaults as 1.0
+    prerequisites:
+      - my stamina >= 10
+win_conditions:
+  - stamina <= 10
+relevant_stats:
+  -
+    stat: stamina
+    base_value: 100
+    base_regen: 1 # how much a stat goes up per turn, defaults to 0
+  -
+    stat: strength
+    base_value: 10 # if a character doesn't have a stat specified, they will default to this base value
+  -
+    stat: speed
+    base_value: 10
+  -
+    stat: defense
+    base_value: 10
