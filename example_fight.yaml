@@ -1,69 +1,87 @@
 ---
 # A simple example fight
-name: fight
-initiative: # determines how a
-  -
-    stat: speed
+name: "fight"
+initiative: # which stats determine who is making the next move
+  - stat: "speed"
     modifier: 1.0
-  -
-    stat: stamina
+  - stat: "stamina"
     modifier: 0.1
+
 moves:
-  -
-    name: attack
+  - name: "attack"
     power: 10
-    affects:
-      -
-        stat: speed
-        modifier: 0.1
-        character: my #character must be my or their, if none, defaults as their
-      -
-        stat: stamina
-        # if no modifier provided, defaults as -1.0
-    descriptions:
-      - $a attacks $b!
-    fail_descriptions:
-      - $a attacks $b but misses!
-    success_rate: 1.0 # if no success rate provided, defaults as 1.0
+    outcomes:
+      - name: "success"
+        descriptions:
+          - "$a attacks $b!"
+          - "$a kicks $b!"
+        damage:
+          -
+            stat: "speed"
+            modifier: 0.1
+            character: my #character must be my, their or both, if none, defaults as their
+          -
+            stat: "stamina"
+            # if no modifier provided, defaults as -1.0 for move against opponent, +1.0 vs self
+        rate: 0.8 # total rate must add up to <= 1
+
+      - name: "fail"
+        descriptions:
+          - "$a attacks $b but trips!"
+        rate: 0.1 # rates do not have to add up to 1.0
+        damage:
+          -
+            stat: "stamina"
+            modifier: -0.1
+            character: my #character must be my, their or both, if none, defaults as their
+
+      - name: "critical"
+        descriptions:
+          - "$a kicks $b super hard!"
+        damage:
+          - stat: "speed"
+            modifier: 0.1
+            character: my #character must be my, their or both, if none, defaults as their
+          - stat: "stamina"
+            modifier: 10
+
+          # if no rate provided, evenly split from 1 - sum(rate of other moves)
+
     prerequisites:
-      - my strength >= 100
-      - their strength <= 100
-      - my strength = their strength
-      - my recent move = move2
-      - their last move = move3
-      - 5 uses total
-  -
-    name: block
+      - "my strength >= 100"
+      - "their strength <= 100"
+      - "my strength = their st"rength"
+      - "my recent move = move2"
+      - "their last move = move3, success" # can specify specific move outcomes
+      - "5 uses total"
+
+  - name: "block"
     power: 100
-    type: self # if specified, can be normal, self, combo or counter
-               # if not specified, treated as normal
-               # a self move only affects the performer
-               # a combo move is performed directly after a specific move
-               # a counter move is only performed after the opponent's move fails
-    affects:
-      -
-        stat: defense
-        modifier: 1.0
-        character: my #character must be my or their, if none, defaults as their
-    descriptions:
-      - $a blocks!
-    # moves can have no fail_descriptions, in this case, their success rate should be 1.0
-    success_rate: 1.0 # if no success rate provided, defaults as 1.0
-    prerequisites:
-      - my stamina >= 10
-win_conditions:
-  - stamina <= 10
+    type: "self" # if specified, can be "normal", "self" or "combo"
+                 # if not specified, treated as "normal"
+                 # a "self" move only affects the performer
+                 # a "combo" move is performed directly after a specific move
+
+    outcomes:
+      - name: "success"
+        descriptions:
+          - "$a raises their guard!"
+        damage:
+          -
+            stat: "defense"
+            modifier: 1
+            character: "my"
+
+lose_conditions:
+  - "stamina <= 10"
+
 relevant_stats:
-  -
-    stat: stamina
+  - stat: "stamina"
     base_value: 100
     base_regen: 1 # how much a stat goes up per turn, defaults to 0
-  -
-    stat: strength
+  - stat: "strength"
     base_value: 10 # if a character doesn't have a stat specified, they will default to this base value
-  -
-    stat: speed
+  - stat: "speed"
     base_value: 10
-  -
-    stat: defense
+  - stat: "defense"
     base_value: 10

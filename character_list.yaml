@@ -1,33 +1,33 @@
 ---
 characters:
-  -
-    nicknames:
-      - Rosie Xu
-      - The Pink Shorty
+  - nicknames:
+      - "Rosie Xu"
+      - "The Pink Shorty"
+
     stats:
-      -
-        stat: stamina
+      - stat: "stamina"
         value: 80
-      -
-        stat: strength
+      - stat: "strength"
         value: 1
-      -
-        stat: speed
+      - stat: "speed"
         value: 100000
+
     signature_moves:
-      -
-        name: super_attack
+      - name: "super_attack"
         power: 10
-        affects:
-          -
-            stat: speed
-            modifier: 0.1
-            character: my #character must be my or their, if none, defaults as their
-          -
-            stat: stamina
-            # if no modifier provided, defaults as -1.0
-        descriptions:
-          - Rosie jumps on $b's back and gives them a wedgie!
-        fail_descriptions:
-          - Rosie jumps past $b and smacks into the turnbuckle
-        success_rate: 0.8
+        outcomes:
+          - name: "success"
+            damage:
+              - stat: "speed"
+                modifier: 0.1
+                character: my #character must be my or their, if none, defaults as their
+              - stat: "stamina"
+                # if no modifier provided, defaults as -1.0
+            descriptions:
+              - "Rosie jumps on $b's back and gives them a wedgie!"
+            rate: 0.8
+          - name: "fail"
+            # no damage info means the move does nothing
+            descriptions:
+              - "Rosie jumps past $b and smacks into the turnbuckle"
+            rate: 0.2
