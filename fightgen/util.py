@@ -4,11 +4,10 @@ import random
 _BRACKET_PAIRS = {"(": ")", "[": "]", "{": "}", "<": ">"}
 
 
-def random(*, low=0, high=1):
+def rnd(*, low=0, high=1):
     assert high >= low
-    n = high - low
-    r = random.random() * n
-    return low + r
+    rnge = high - low
+    return low + random.random() * rnge
 
 
 def choice(lst):

@@ -10,7 +10,8 @@ rulesets:
 
     moves:
       - name: "attack"
-        power: 10
+        priority: 1 #if no priority is given, defaults to 0
+                    #moves with higher priority will be chosen more often
         outcomes:
           - name: "success"
             descriptions:
@@ -18,9 +19,10 @@ rulesets:
               - "|a kicks |b!"
             damage:
               - stat: "speed"
-                modifier: 0.1
+                amount: 1
                 character: my #character must be my, their or both, if none, defaults as their
               - stat: "stamina"
+                amount: 10
                 # if no modifier provided, defaults as -1.0 for move against opponent, +1.0 vs self
             rate: 0.8 # total rate must add up to <= 1
 
@@ -30,7 +32,7 @@ rulesets:
             rate: 0.1 # rates do not have to add up to 1.0
             damage:
               - stat: "stamina"
-                modifier: -0.1
+                amount: -1
                 character: my #character must be my, their or both, if none, defaults as their
 
           - name: "critical"
@@ -38,10 +40,10 @@ rulesets:
               - "|a kicks |b super hard!"
             damage:
               - stat: "speed"
-                modifier: 0.1
+                amount: 1
                 character: my #character must be my, their or both, if none, defaults as their
               - stat: "stamina"
-                modifier: 10
+                amount: -1
               # if no rate provided, evenly split from 1 - sum(rate of other moves)
 
         prerequisites:
